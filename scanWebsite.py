@@ -1,5 +1,5 @@
-def scan_website(url):
-  with open('out.txt', 'w', encoding='utf-8') as f:
+def scan_website(url,outfile='out.txt'):
+  with open(outfile, 'w', encoding='utf-8') as f:
       f.write('')
       
   def pageScan(url0):
@@ -22,7 +22,7 @@ def scan_website(url):
           visable_tags = [t for t in alltags if t.parent.name not in ['style','nav', 'script','script', 'head', 'title', 'meta','nav','link','footer','base','applet','iframe','embed','nodembed','object','param','source','[document]']]
           text = ' '.join([re.sub(r'[\n\s\r\t/]+',' ', t) for t in visable_tags])
           text = re.sub(r'\s+', ' ', text)
-          with open('out.txt', 'a+', encoding='utf-8') as f:
+          with open(outfile, 'a+', encoding='utf-8') as f:
               f.seek(0)
               t = f.read()
               if text not in t:
@@ -47,4 +47,4 @@ def scan_website(url):
 
   
 url = 'http://www.example.com/'
-scan_website(url)
+scan_website(url, 'out.txt')
