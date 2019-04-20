@@ -22,7 +22,6 @@ def scan_website(url):
           visable_tags = [t for t in alltags if t.parent.name not in ['style','nav', 'script','script', 'head', 'title', 'meta','nav','link','footer','base','applet','iframe','embed','nodembed','object','param','source','[document]']]
           text = ' '.join([re.sub(r'[\n\s\r\t/]+',' ', t) for t in visable_tags])
           text = re.sub(r'\s+', ' ', text)
-          text = re.sub(r'<\!--.*-->','',text)
           with open('out.txt', 'a+', encoding='utf-8') as f:
               f.seek(0)
               t = f.read()
