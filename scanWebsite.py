@@ -11,12 +11,13 @@ def scan_website(url,outfile='out.txt'):
   
   def pageScan(url0):
     page = requests.get(url0,headers = headers)
+    print('-----------getting : ',url0)
 
     if page.status_code != 200 and (not url0.endswith('/')):
       url0 += '/'
       page = requests.get(url0, headers = headers)
-    if page.status_code == 200:
-
+      
+    if page.status_code == 200 and page.url not in link_warehouse and page.url.split('.')[-1].lower() not in ['pdf','doc','png','mp4','jpg','jpeg','gif','xls','xlsx','csv','png']:
         soup = BeautifulSoup(page.content, 'html5lib')
         comm = soup.findAll(text=lambda text:isinstance(text, Comment))
         [cm.extract() for cm in comm]
@@ -24,7 +25,7 @@ def scan_website(url,outfile='out.txt'):
         visable_tags = [t for t in alltags if t.parent.name not in ['style', 'script','script','img', 'head', 'title', 'meta','link','footer','base','applet','iframe','embed','nodembed','object','param','source','[document]']]
         text = ' '.join([re.sub(r'[\n\s\r\t/]+',' ', t) for t in visable_tags])
         text = re.sub(r'\s+', ' ', text)
-        print(page.status_code, ' : words', len(text))
+        print('success! ', ' : words', len(text),' ', url0,' ', text[:50])
         nav = ''
         for sw in webstopwords:
           text = text.lower().replace(sw,'')
@@ -49,11 +50,10 @@ def scan_website(url,outfile='out.txt'):
             url0 += '/'
           links = [link if link.startswith(url) or link.startswith(url.replace('http','https')) else url+re.findall(r'\W*(\w.*)',link)[0] for link in links if re.findall(r'\W*(\w.*)',link)]
           links = list(set(links))
-          
-
+         
 
           for link in links:
-              if link not in link_warehouse and '.pdf' not in link and '@' not in link:
+            if link not in link_warehouse and link.split('.')[-1].lower() not in ['pdf','doc','png','mp4','jpg','jpeg','gif','xls','xlsx','csv','png'] and '@' not in link:
                 link_warehouse.append(link)
                 if len(link_warehouse) > 200:
                   break
